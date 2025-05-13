@@ -1,7 +1,5 @@
 <?php 
-session_start(); // Démarre la session
-// Vérifie si l'utilisateur est déjà connecté   
-require_once 'pdo.php';
+require_once('header.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['pass'];
@@ -12,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch();
     
     if ($user && password_verify($password, $user['pass'])) {
+        $_SESSION['user_logged_in'] = true; // Indique que l'utilisateur est connecté
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['pseudo']; 
         $_SESSION['mail'] = $user['mail'];

@@ -1,12 +1,10 @@
 <?php 
- require_once('pdo.php');
- session_start(); // Démarre la session 
-
+include_once('header.php'); // Inclut le fichier d'en-tête
  if (!isset($_SESSION['user_id'])) {
      header('Location: connexion.php'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
      exit;
  }
- else { ?>
+ else {  ?>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-uto3j0v5x+6gk4m7c5q8f5z5f5f5f5f5f5f5f5f5f5=" crossorigin="anonymous"></script>
  <!-- Bienvenue -->
@@ -66,9 +64,56 @@
                 <input type="radio" id="non" name="animaux" value="non"> Non
             </div>
             <button class="ajout-preferences">Ajouter des préférences</button>
+            <div class="vos-preferences">
+                <div>
+                    <label for="pref_1">Preférence 1</label>
+                    <input type="text" id="pref_1" name="pref_1">
+                </div>
+                <div>
+                    <label for="pref_2">Preférence 2</label>
+                    <input type="text" id="pref_2" name="pref_2">
+                </div>
+                <button id="prefplus">
+                    <p>Nouvelle préférence</p>
+                </button>
+            </div>
     </form>
  </div>
 
  <script>
-    
+    $(document).ready(function() {
+        // Cache la div "vos-preferences" au début
+        $('.vos-preferences').hide();
+
+        // Affiche la div "vos-preferences" au clic sur le bouton "ajout-preferences"
+        $('.ajout-preferences').click(function(e) {
+            e.preventDefault();
+            $('.vos-preferences').show();
+        });
+
+        // Ajoute un nouvel input pour une nouvelle préférence au clic sur le bouton "prefplus"
+        let preferenceCount = 2;
+        $('#prefplus').click(function(e) {
+            e.preventDefault();
+            preferenceCount++;
+            const newPreference = `
+                <div>
+                    <label for="pref_${preferenceCount}">Préférence ${preferenceCount}</label>
+                    <input type="text" id="pref_${preferenceCount}" name="pref_${preferenceCount}">
+                </div>
+            `;
+            // Ajoute le nouvel input juste après les derniers inputs existants
+            $('.vos-preferences div:last').after(newPreference);
+        });
+    });
+    // Cache la div "vos-preferences" au début
+    $('.vos-preferences').hide();
+
+    // Affiche la div "vos-preferences" au clic sur le bouton "ajout-preferences"
+    $('.ajout-preferences').click(function(e) {
+        e.preventDefault();
+        $('.vos-preferences').show();
+    });
+
+  
  </script>
