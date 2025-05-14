@@ -1,9 +1,11 @@
 <?php 
 include_once('header.php'); // Inclut le fichier d'en-tête
+
  if (!isset($_SESSION['user_id'])) {
      header('Location: connexion.php'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
      exit;
- }  ?>
+ }
+ else {  ?>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-uto3j0v5x+6gk4m7c5q8f5z5f5f5f5f5f5f5f5f5f5=" crossorigin="anonymous"></script>
  <!-- Bienvenue -->
@@ -19,67 +21,7 @@ include_once('header.php'); // Inclut le fichier d'en-tête
         <p>Actuellement il vous reste <?php echo $_SESSION['credit']?> credit(s) </p>
         <p><a href="deconnexion.php">Déconnexion</a></p>
         <p><a href="covoiturage.php">Proposer un covoiturage</a></p>
- <?php
- 
- if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $immatriculation = $_POST['immatriculation'];
-    $premiere_immat = $_POST['1er'];
-    $marque = $_POST['marque'];
-    $modele = $_POST['modele'];
-    $couleur = $_POST['couleur'];
-    $nb_place = $_POST['nb_place'];
-    $fumeur = $_POST['fumeur'];
-    $animaux = $_POST['animaux'];
-    // Récupère toutes les préférences soumises
-    $preferences = [];
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'pref_') === 0 && !empty($value)) {
-        $preferences[] = $value;
-        }
-    }
-    $preferences_json = json_encode($preferences); // Convertit les préférences en JSON
-
-    // Ajoute les préférences à la requête SQL
-    $stmt = $pdo->prepare("INSERT INTO voiture (user_id, immatriculation, date, marque, modele, couleur, nb_place, fumeur, animaux, preferences) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['user_id'], $immatriculation, $premiere_immat, $marque, $modele, $couleur, $nb_place, $fumeur, $animaux, $preferences_json])) {
-        echo "<p style='color: green;'>Véhicule et préférences enregistrés avec succès !</p>";
-    } else {
-        echo "<p style='color: red;'>Erreur lors de l'enregistrement du véhicule et des préférences.</p>";
-    }
-}
- 
- ?>
-
-<!-- Chercher avec $_SESSION['user_id] si un vehicule est rattaché  -->
-<!-- Si il y'en a au moins 1 l'afficher vous forme de card et cacher le form-->
-<!-- Si aucun n'est rattaché avec l'user_id afficher le form  -->
-
-<?php 
-$voiture_user_id = $pdo->prepare("SELECT * FROM voiture WHERE user_id = ?");
-$voiture_user_id->execute([$_SESSION['user_id']]);
-if ($voiture_user_id->rowCount() > 0) {
-    while ($row = $voiture_user_id->fetch(PDO::FETCH_ASSOC)) { ?>
-        <div class="card">
-        <?php if ($voiture_user_id->rowCount() == 1) {?>
-            <h3>Votre véhicule enregistré</h3>
-            <?php 
-        if ($voiture_user_id->rowCount() > 1) { ?>
-            <h3>Vos véhicules enregistrés</h3>
-        <?php } ?>
-            <p><strong>Immatriculation:</strong> <?php echo $row['immatriculation']; ?></p>
-            <p><strong>Date de première immatriculation:</strong> <?php echo $row['date']; ?></p>
-            <p><strong>Marque:</strong> <?php echo $row['marque']; ?></p>
-            <p><strong>Modèle:</strong> <?php echo $row['modele']; ?></p>
-            <p><strong>Couleur:</strong> <?php echo $row['couleur']; ?></p>
-            <p><strong>Nombre de places disponibles:</strong> <?php echo $row['nb_place']; ?></p>
-            <p><strong>Préférences:</strong> <?php echo $row['preferences']; ?></p>
-        </div>
-    <?php } } } else { ?>
-        <div class="card">
-            <h3>Aucun véhicule enregistré</h3>
-            <p>Veuillez enregistrer un véhicule pour proposer un covoiturage.</p>
-        </div>
-<?php }  ?>
+ <?php } ?>
 
 
  <!-- Vehicule -->
