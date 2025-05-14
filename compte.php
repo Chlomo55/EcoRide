@@ -1,89 +1,106 @@
-<?php 
+<?php
 include_once('header.php'); // Inclut le fichier d'en-tête
- if (!isset($_SESSION['user_id'])) {
-     header('Location: connexion.php'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
-     exit;
- }  ?>
+
+// Vérifie si l'utilisateur est connecté
+if (!isset($_SESSION['user_id'])) {
+    header('Location: connexion.php'); // Redirige vers la page de connexion
+    exit;
+}
+?>
+
+<!-- Inclusion des scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-uto3j0v5x+6gk4m7c5q8f5z5f5f5f5f5f5f5f5f5f5=" crossorigin="anonymous"></script>
- <!-- Bienvenue -->
-    <div>
-        <h1>Bienvenue sur votre compte</h1>
-        <select name="category" id="category">
-            <option value="chauffeur">Chauffeur</option>
-            <option value="passager">Passager</option>
-            <option value="2">Chauffeur et Passager</option>
-        </select>
-        <p>Vous êtes connecté en tant que <?php echo $_SESSION['username']; ?></p>
-        <p>Votre email est <?php echo $_SESSION['mail']?></p>
-        <p>Actuellement il vous reste <?php echo $_SESSION['credit']?> credit(s) </p>
-        <p><a href="deconnexion.php">Déconnexion</a></p>
-        <p><a href="covoiturage.php">Proposer un covoiturage</a></p>
- <?php
- 
- if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-uto3j0v5x+6gk4m7c5q8f5z5f5f5f5f5f5f5f5f5=" crossorigin="anonymous"></script>
+
+<!-- Bienvenue -->
+<div>
+    <h1>Bienvenue sur votre compte</h1>
+    <select name="category" id="category">
+        <option value="chauffeur">Chauffeur</option>
+        <option value="passager">Passager</option>
+        <option value="2">Chauffeur et Passager</option>
+    </select>
+    <p>Vous êtes connecté en tant que <?php echo $_SESSION['username']; ?></p>
+    <p>Votre email est <?php echo $_SESSION['mail']; ?></p>
+    <p>Actuellement il vous reste <?php echo $_SESSION['credit']; ?> crédit(s)</p>
+    <p><a href="deconnexion.php">Déconnexion</a></p>
+    <p><a href="covoiturage.php">Proposer un covoiturage</a></p>
+</div>
+
+<?php
+// Gestion de l'enregistrement du véhicule
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $immatriculation = $_POST['immatriculation'];
     $premiere_immat = $_POST['1er'];
     $marque = $_POST['marque'];
     $modele = $_POST['modele'];
     $couleur = $_POST['couleur'];
+    $energie = $_POST['energie'] === 'autre' ? $_POST['autre_energie'] : $_POST['energie'];
     $nb_place = $_POST['nb_place'];
     $fumeur = $_POST['fumeur'];
     $animaux = $_POST['animaux'];
-    // Récupère toutes les préférences soumises
+
+    // Récupère les préférences
     $preferences = [];
     foreach ($_POST as $key => $value) {
         if (strpos($key, 'pref_') === 0 && !empty($value)) {
-        $preferences[] = $value;
+            $preferences[] = $value;
         }
     }
-    $preferences_json = json_encode($preferences); // Convertit les préférences en JSON
+    $preferences_user = implode(', ', $preferences);
 
-    // Ajoute les préférences à la requête SQL
-    $stmt = $pdo->prepare("INSERT INTO voiture (user_id, immatriculation, date, marque, modele, couleur, nb_place, fumeur, animaux, preferences) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['user_id'], $immatriculation, $premiere_immat, $marque, $modele, $couleur, $nb_place, $fumeur, $animaux, $preferences_json])) {
+    // Insertion dans la base de données
+    $stmt = $pdo->prepare("INSERT INTO voiture (user_id, immatriculation, date, marque, modele, couleur, energie, nb_place, fumeur, animaux, preferences) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    if ($stmt->execute([$_SESSION['user_id'], $immatriculation, $premiere_immat, $marque, $modele, $couleur, $energie, $nb_place, $fumeur, $animaux, $preferences_user])) {
         echo "<p style='color: green;'>Véhicule et préférences enregistrés avec succès !</p>";
     } else {
         echo "<p style='color: red;'>Erreur lors de l'enregistrement du véhicule et des préférences.</p>";
     }
 }
- 
- ?>
 
-<!-- Chercher avec $_SESSION['user_id] si un vehicule est rattaché  -->
-<!-- Si il y'en a au moins 1 l'afficher vous forme de card et cacher le form-->
-<!-- Si aucun n'est rattaché avec l'user_id afficher le form  -->
-
-<?php 
+// Récupération des véhicules de l'utilisateur
 $voiture_user_id = $pdo->prepare("SELECT * FROM voiture WHERE user_id = ?");
 $voiture_user_id->execute([$_SESSION['user_id']]);
-if ($voiture_user_id->rowCount() > 0) {
-    while ($row = $voiture_user_id->fetch(PDO::FETCH_ASSOC)) { ?>
-        <div class="card">
-        <?php if ($voiture_user_id->rowCount() == 1) {?>
-            <h3>Votre véhicule enregistré</h3>
-            <?php 
-        if ($voiture_user_id->rowCount() > 1) { ?>
-            <h3>Vos véhicules enregistrés</h3>
-        <?php } ?>
-            <p><strong>Immatriculation:</strong> <?php echo $row['immatriculation']; ?></p>
-            <p><strong>Date de première immatriculation:</strong> <?php echo $row['date']; ?></p>
-            <p><strong>Marque:</strong> <?php echo $row['marque']; ?></p>
-            <p><strong>Modèle:</strong> <?php echo $row['modele']; ?></p>
-            <p><strong>Couleur:</strong> <?php echo $row['couleur']; ?></p>
-            <p><strong>Nombre de places disponibles:</strong> <?php echo $row['nb_place']; ?></p>
-            <p><strong>Préférences:</strong> <?php echo $row['preferences']; ?></p>
-        </div>
-    <?php } } } else { ?>
-        <div class="card">
-            <h3>Aucun véhicule enregistré</h3>
-            <p>Veuillez enregistrer un véhicule pour proposer un covoiturage.</p>
-        </div>
-<?php }  ?>
+$voitures = $voiture_user_id->fetchAll(PDO::FETCH_ASSOC);
+?>
 
+<!-- Affichage des véhicules -->
+<?php if (count($voitures) > 0): ?>
+    <div class="card">
+        <h3><?php echo count($voitures) === 1 ? "Votre véhicule enregistré" : "Vos véhicules enregistrés"; ?></h3>
+        <?php foreach ($voitures as $row): ?>
+            <p><strong>Immatriculation:</strong> <?php echo htmlspecialchars($row['immatriculation']); ?></p>
+            <p><strong>Date de première immatriculation:</strong> <?php echo htmlspecialchars($row['date']); ?></p>
+            <p><strong>Marque:</strong> <?php echo htmlspecialchars($row['marque']); ?></p>
+            <p><strong>Modèle:</strong> <?php echo htmlspecialchars($row['modele']); ?></p>
+            <p><strong>Couleur:</strong> <?php echo htmlspecialchars($row['couleur']); ?></p>
+            <p><strong>Énergie:</strong> <?php echo htmlspecialchars($row['energie']); ?></p>
+            <p><strong>Fumeur:</strong> <?php echo htmlspecialchars($row['fumeur']) === 1 ? "Oui" : "Non"; ?></p>
+            <p><strong>Animaux:</strong> <?php echo htmlspecialchars($row['animaux']) === 1 ? "Oui" : "Non"; ?></p>
+            <p><strong>Vos préférences:</strong>
+                <?php if (empty($row['preferences'])): ?>
+                    Aucune préférence enregistrée.
+                <?php else: ?>
+                    <ul>
+                        <?php foreach (explode(', ', $row['preferences']) as $preference): ?>
+                            <li><?php echo htmlspecialchars($preference); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </p>
+            <p><strong>Nombre de places disponibles:</strong> <?php echo htmlspecialchars($row['nb_place']); ?></p>
+            <hr>
+        <?php endforeach; ?>
+    </div>
+<?php else: ?>
+    <div class="card">
+        <h3>Aucun véhicule enregistré</h3>
+        <p>Veuillez enregistrer un véhicule pour proposer un covoiturage.</p>
+    </div>
+<?php endif; ?>
 
- <!-- Vehicule -->
- <div class="chauffeur-div">
+<!-- Formulaire d'enregistrement de véhicule -->
+<div class="chauffeur-div">
     <form method="post">
         <h3>Votre véhicule</h3>
         <div>
@@ -103,8 +120,22 @@ if ($voiture_user_id->rowCount() > 0) {
             <input type="text" id="modele" name="modele" required>
         </div>
         <div>
-            <label for="couleur">Couleur de votre véhicule</label>    
+            <label for="couleur">Couleur de votre véhicule</label>
             <input type="text" id="couleur" name="couleur" required>
+        </div>
+        <div>
+            <label for="energie">Énergie</label>
+            <select name="energie" id="energie">
+                <option value="essence">Essence</option>
+                <option value="diesel">Diesel</option>
+                <option value="electrique">Électrique</option>
+                <option value="hybride">Hybride</option>
+                <option value="autre">Autre</option>
+            </select>
+        </div>
+        <div id="autre-energie-div" style="display: none;">
+            <label for="autre_energie">Veuillez préciser l'énergie</label>
+            <input type="text" id="autre_energie" name="autre_energie">
         </div>
         <div>
             <label for="nb_place">Nombre de places disponibles</label>
@@ -140,45 +171,34 @@ if ($voiture_user_id->rowCount() > 0) {
             </div>
             <br>
             <button type="submit">Enregistrer</button>
+        </div>
     </form>
- </div>
+</div>
 
- <script>
+<!-- Scripts JS -->
+<script>
     $(document).ready(function() {
-        // Cache la div "vos-preferences" au début
-        $('.vos-preferences').hide();
+        // Gestion de l'énergie "Autre"
+        $('#energie').change(function() {
+            if ($(this).val() === 'autre') {
+                $('#autre-energie-div').show();
+            } else {
+                $('#autre-energie-div').hide();
+                $('#autre_energie').val('');
+            }
+        });
 
-        // Affiche la div "vos-preferences" au clic sur le bouton "ajout-preferences"
+        // Gestion des préférences
+        $('.vos-preferences').hide();
         $('.ajout-preferences').click(function(e) {
             e.preventDefault();
             $('.vos-preferences').show();
-
-            // Réinitialise les préférences par défaut si aucun input n'existe
-            if ($('.vos-preferences div').length === 0) {
-                const defaultPreferences = `
-                    <div>
-                        <label for="pref_1">Préférence 1</label>
-                        <input type="text" id="pref_1" name="pref_1">
-                        <button class="remove-preference" style="color: red;">&#10006;</button>
-                    </div>
-                    <div>
-                        <label for="pref_2">Préférence 2</label>
-                        <input type="text" id="pref_2" name="pref_2">
-                        <button class="remove-preference" style="color: red;">&#10006;</button>
-                    </div>
-                `;
-                $('#prefplus').before(defaultPreferences); // Ajoute les inputs avant le bouton "Nouvelle préférence"
-            }
-
-            $(this).prop('disabled', true); // Désactive le bouton "ajout-preferences"
+            $(this).prop('disabled', true);
         });
 
-        // Ajoute un nouvel input pour une nouvelle préférence au clic sur le bouton "prefplus"
         $('#prefplus').click(function(e) {
             e.preventDefault();
-            let lastPreference = $('.vos-preferences div:last input').attr('id');
-            let preferenceCount = lastPreference ? parseInt(lastPreference.split('_')[1]) : 0;
-            preferenceCount++;
+            let preferenceCount = $('.vos-preferences div').length + 1;
             const newPreference = `
                 <div>
                     <label for="pref_${preferenceCount}">Préférence ${preferenceCount}</label>
@@ -186,27 +206,16 @@ if ($voiture_user_id->rowCount() > 0) {
                     <button class="remove-preference" style="color: red;">&#10006;</button>
                 </div>
             `;
-            // Ajoute le nouvel input juste avant le bouton "Nouvelle préférence"
             $('#prefplus').before(newPreference);
         });
 
-        // Supprime un input de préférence au clic sur la croix rouge
         $(document).on('click', '.remove-preference', function(e) {
             e.preventDefault();
             $(this).parent().remove();
-
-            // Réorganise les numéros des préférences après suppression
-            $('.vos-preferences div').each(function(index) {
-                const newIndex = index + 1;
-                $(this).find('label').attr('for', `pref_${newIndex}`).text(`Préférence ${newIndex}`);
-                $(this).find('input').attr('id', `pref_${newIndex}`).attr('name', `pref_${newIndex}`);
-            });
-
-            // Si tous les inputs sont supprimés, cache la div "vos-preferences" et réactive le bouton "ajout-preferences"
             if ($('.vos-preferences div').length === 0) {
                 $('.vos-preferences').hide();
                 $('.ajout-preferences').prop('disabled', false);
             }
         });
     });
- </script>
+</script>
