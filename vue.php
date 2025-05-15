@@ -1,6 +1,5 @@
 <?php
-// Connexion à la base de données
-$pdo = new PDO("mysql:host=localhost;dbname=ecoride", "root", "");
+require_once('header.php');
 
 // Récupération des données du formulaire
 $depart = $_GET['depart'] ?? '';
@@ -101,7 +100,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <p><strong>Prix :</strong> <?= $r['prix'] ?> €</p>
                 <p><strong>Places restantes :</strong> <?= $r['place'] ?></p>
                 <p><strong>Écologique :</strong> <?= strtolower($r['energie']) == 'electrique' ? 'Oui' : 'Non' ?></p>
-                <form method="get" action="detail.php">
+                <form method="get" action="detail_corrige.php">
                     <input type="hidden" name="id" value="<?= $r['id'] ?>">
                     <input type="submit" value="Détail">
                 </form>

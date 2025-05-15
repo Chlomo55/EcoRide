@@ -25,6 +25,7 @@ if (!isset($_SESSION['user_id'])) {
     <p>Actuellement il vous reste <?php echo $_SESSION['credit']; ?> crédit(s)</p>
     <p><a href="deconnexion.php">Déconnexion</a></p>
     <p><a href="covoiturage.php">Proposer un covoiturage</a></p>
+    <p><a href="vue.php">vue</a></p>
 </div>
 
 <?php
