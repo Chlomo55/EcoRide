@@ -12,9 +12,5 @@ if (!$pdo) {
     echo "<div style='color: red; font-weight: bold; font-family: Arial, sans-serif;'>
             Erreur : Impossible de se connecter à la base de données.
           </div>";
-} else {
-    echo "<div style='color: green; font-weight: bold; font-family: Arial, sans-serif;'>
-            Connexion réussie à la base de données.
-          </div>";
-}
+} 
 ?>
