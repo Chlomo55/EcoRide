@@ -29,7 +29,7 @@ if (!$covoit) {
 
 // Traitement de la participation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
-    if (!isset($_SESSION['user_logged_in']) || $_SESSION['category'] !== 'Utilisateur') {
+    if (!isset($_SESSION['user_logged_in']) || $_SESSION['category'] !== 'passager') {
         header("Location: connexion.php");
         exit;
     }
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
 
         <hr>
         <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']): ?>
-            <?php if ($_SESSION['category'] == 'Utilisateur'): ?>
+            <?php if ($_SESSION['category'] == 'passager'): ?>
                 <?php if ($_SESSION['credit'] >= $covoit['prix'] && $covoit['place'] > 0): ?>
                     <form method="post" onsubmit="return confirm('Voulez-vous utiliser <?= $covoit['prix'] ?> crédits pour participer à ce trajet ?');">
                         <input type="hidden" name="participer" value="1">
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
                     </p>
                 <?php endif; ?>
             <?php else: ?>
-                <p>Vous devez être un utilisateur inscrit pour participer. <a href="inscription.php">Créer un compte</a></p>
+                <p>Vous devez être un passager inscrit pour participer. <a href="inscription.php">Créer un compte</a></p>
             <?php endif; ?>
         <?php else: ?>
             <p><a href="connexion.php">Connectez-vous</a> pour participer à ce covoiturage.</p>
