@@ -51,6 +51,7 @@ $voitures = $voiture_user_id->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- Affichage des véhicules -->
 <?php if (count($voitures) > 0): ?>
+    <button id="show-cars-div">Afficher mes vehicules enregistrés</button>
     <div class="card">
         <h3><?php echo count($voitures) === 1 ? "Votre véhicule enregistré" : "Vos véhicules enregistrés"; ?></h3>
         <?php foreach ($voitures as $row): ?>
@@ -85,7 +86,8 @@ $voitures = $voiture_user_id->fetchAll(PDO::FETCH_ASSOC);
 <?php endif; ?>
 
 <!-- Formulaire d'enregistrement de véhicule -->
-<div class="chauffeur-div">
+ <button id="register-cars">Enregistrer un vehicule</button>
+<div class="register-div">
     <form method="post">
         <h3>Votre véhicule</h3>
         <div>
@@ -160,6 +162,19 @@ $voitures = $voiture_user_id->fetchAll(PDO::FETCH_ASSOC);
         } else {
             autreEnergieDiv.style.display = 'none';
         }
+    });
+    // Afficher les vehicules
+    $(document).ready(function() {
+        $('.card').hide();
+        $('#show-cars-div').click(function() {
+            $('.card').show();
+            $('#show-cars-div').hide();
+        });
+        $('.register-div').hide();
+        $('#register-cars').click(function() {
+            $('.register-div').show();
+            $('#register-cars').hide();
+        });
     });
 </script>
 

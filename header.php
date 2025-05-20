@@ -17,7 +17,7 @@ session_start(); // Démarre la session
             <div class="nav-container">
                 <ul>
                     <li><a href="index.php">Accueil</a></li>
-                    <li><a href="covoiturage.php">Covoiturage</a></li>
+                    <li><a href="vue.php">Covoiturage</a></li>
                     <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li><a href="compte.php">Compte</a></li>
                     <?php else: ?>

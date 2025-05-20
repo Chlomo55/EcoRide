@@ -9,6 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $heure_arrivee = $_POST['heure_arrivee'];
     $prix = $_POST['prix'];
 
+    // Vérifie la catégorie de l'utilisateur
+    $categorie = $_SESSION['category'];
+    $etat = 0;
+    $id_chauffeur = null;
+    if ($categorie === 'chauffeur' || $categorie === '2') {
+        $etat = 1;
+        $id_chauffeur = $_SESSION['user_id'];
+    }
+
     // Récupère le nombre de places de la voiture sélectionnée
     $stmt = $pdo->prepare("SELECT nb_place FROM voiture WHERE id = ? AND user_id = ?");
     $stmt->execute([$voiture_id, $_SESSION['user_id']]);
@@ -17,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($voiture) {
         $nb_place = $voiture['nb_place'];
 
-        // Insère dans la table covoiturage avec le nombre de places récupéré
-        $insert = $pdo->prepare("INSERT INTO covoiturage (voiture_id, depart, arrivee, heure_depart, heure_arrivee, prix, place) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $insert->execute([$voiture_id, $depart, $arrivee, $heure_depart, $heure_arrivee, $prix, $nb_place]);
+        // Insère dans la table covoiturage avec le nombre de places récupéré, l'état et l'id_chauffeur
+        $insert = $pdo->prepare("INSERT INTO covoiturage (voiture_id, depart, arrivee, heure_depart, heure_arrivee, prix, place, etat, id_chauffeur) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insert->execute([$voiture_id, $depart, $arrivee, $heure_depart, $heure_arrivee, $prix, $nb_place, $etat, $id_chauffeur]);
 
         echo "<p style='color: green;'>Covoiturage créé avec succès.</p>";
     } else {

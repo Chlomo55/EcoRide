@@ -11,7 +11,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=ecoride", "root", "");
 $id = $_GET['id'];
 
 $query = "
-    SELECT c.*, u.pseudo, u.photo, u.note, u.id as user_id, u.avis, v.marque, v.modele, v.energie, v.preferences
+    SELECT c.*, u.pseudo, u.photo, u.note, u.id as user_id, v.marque, v.modele, v.energie, v.preferences
     FROM covoiturage c
     JOIN voiture v ON c.voiture_id = v.id
     JOIN user u ON v.user_id = u.id
@@ -39,18 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
     } elseif ($covoit['place'] <= 0) {
         echo "<p style='color:red;'>Plus de place disponible.</p>";
     } else {
-        $insert = $pdo->prepare("INSERT INTO passager (user_id, covoiturage_id) VALUES (?, ?)");
-        $insert->execute([$_SESSION['user_id'], $covoit['id']]);
+        // Vérifier si l'utilisateur est déjà inscrit à ce covoiturage
+        $check = $pdo->prepare("SELECT COUNT(*) FROM passager WHERE user_id = ? AND covoiturage_id = ?");
+        $check->execute([$_SESSION['user_id'], $covoit['id']]);
+        if ($check->fetchColumn() > 0) {
+            echo "<p style='color:red;'>Vous êtes déjà inscrit à ce trajet.</p>";
+        } else {
+            $insert = $pdo->prepare("INSERT INTO passager (user_id, covoiturage_id) VALUES (?, ?)");
+            $insert->execute([$_SESSION['user_id'], $covoit['id']]);
 
-        $updateCredit = $pdo->prepare("UPDATE user SET credit = credit - ? WHERE id = ?");
-        $updateCredit->execute([$covoit['prix'], $_SESSION['user_id']]);
-        $_SESSION['credit'] -= $covoit['prix'];
+            $updateCredit = $pdo->prepare("UPDATE user SET credit = credit - ? WHERE id = ?");
+            $updateCredit->execute([$covoit['prix'], $_SESSION['user_id']]);
+            $_SESSION['credit'] -= $covoit['prix'];
 
-        $updatePlace = $pdo->prepare("UPDATE covoiturage SET place = place - 1 WHERE id = ?");
-        $updatePlace->execute([$covoit['id']]);
+            $updatePlace = $pdo->prepare("UPDATE covoiturage SET place = place - 1 WHERE id = ?");
+            $updatePlace->execute([$covoit['id']]);
 
-        echo "<p style='color:green;'>Participation confirmée !</p>";
-        header("Refresh:1");
+            echo "<p style='color:green;'>Participation confirmée !</p>";
+            header("Refresh:1");
+        }
     }
 }
 ?>
@@ -66,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
     <div style="border:1px solid #ccc; padding:15px; margin-bottom:20px;">
         <h2>Conducteur : <?= htmlspecialchars($covoit['pseudo']) ?> (Note : <?= $covoit['note'] ?>/5)</h2>
         <img src="data:image/jpeg;base64,<?= base64_encode($covoit['photo']) ?>" width="100"><br><br>
-        <p><strong>Avis :</strong> <?= $covoit['avis'] ?></p>
+        <p><strong>Note :</strong> <?= $covoit['note']. '/5' ?></p>
 
         <h3>Itinéraire</h3>
         <p><strong>Départ :</strong> <?= $covoit['depart'] ?> - <?= date('d/m/Y H:i', strtotime($covoit['heure_depart'])) ?></p>

@@ -61,7 +61,7 @@ label {
     display: block;
 }
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="datetime-local"], select, textarea {
-    width: 100%;
+    width: 90%;
     padding: 10px 16px;
     border-radius: 8px;
     border: 1.5px solid #a5d6a7;
