@@ -11,13 +11,13 @@
 
 ## 1. Cloner ou copier le projet
 
-Place le dossier `ECF` dans le répertoire `www` de WAMP (`c:\wamp64\www\ECF`).
+Placer le dossier `ECF` dans le répertoire `www` de WAMP (`c:\wamp64\www\ECF`).
 
 ---
 
 ## 2. Installer les dépendances PHP pour l’admin
 
-Ouvre un terminal dans `c:\wamp64\www\ECF\Admin` puis exécute :
+Ouvrir un terminal dans `c:\wamp64\www\ECF\Admin` puis exécute :
 
 ```bash
 composer install
@@ -29,8 +29,8 @@ Cela installera la bibliothèque MongoDB pour PHP.
 
 ## 3. Configurer la base de données MySQL (partie User)
 
-1. Ouvre **phpMyAdmin** ou un terminal MySQL.
-2. Crée la base de données :
+1. Ouvrir **phpMyAdmin** ou un terminal MySQL.
+2. Créer la base de données :
 
 ```sql
 CREATE DATABASE ecoride CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
