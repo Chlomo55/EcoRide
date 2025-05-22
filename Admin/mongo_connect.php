@@ -8,7 +8,7 @@ require 'vendor/autoload.php'; // Assurez-vous que Composer et mongodb/mongodb s
 
 try {
     $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-    $db = $mongoClient->selectDatabase('your_database_name'); // Remplacez par le nom de votre base
+    $db = $mongoClient->selectDatabase('admin'); // Remplacez par le nom de votre base
 } catch (Exception $e) {
     die('Erreur de connexion à MongoDB : ' . $e->getMessage());
 }
