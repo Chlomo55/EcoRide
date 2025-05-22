@@ -1,13 +1,21 @@
 <?php
-require_once 'mongo_connect.php';
+$host = 'localhost';
+$dbname = 'nom_de_ta_base'; // Remplace par le nom de ta base
+$user = 'root';
+$pass = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
-    if ($name && $email) {
-        $db->users->insertOne(['name' => $name, 'email' => $email]);
+    try {
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $stmt = $pdo->prepare("INSERT INTO user (pseudo, mail) VALUES (?, ?)");
+        $stmt->execute([$name, $email]);
         header('Location: users.php');
         exit;
+    } catch (PDOException $e) {
+        die("Erreur : " . $e->getMessage());
     }
 }
 ?>
@@ -16,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style-admin.css">
     <title>Ajouter un Utilisateur</title>
 </head>
 <body>

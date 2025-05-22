@@ -37,23 +37,11 @@ function getStatistics() {
 
 $statistics = getStatistics();
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord Administrateur</title>
-    <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <header>
-        <h1>Tableau de Bord Administrateur</h1>
-    </header>
+<?php require_once('header.php');?>
     <main>
         <section>
             <h2>Statistiques Clés</h2>
-            <p>Nombre total de crédits gagnés : <?php echo $statistics['totalCredits']; ?></p>
+            <div class="stat">Nombre total de crédits gagnés : <strong><?php echo $statistics['totalCredits']; ?></strong></div>
         </section>
         <section>
             <h3>Covoiturages par jour</h3>
@@ -62,6 +50,13 @@ $statistics = getStatistics();
         <section>
             <h3>Crédits gagnés par jour</h3>
             <canvas id="creditsChart" width="400" height="200"></canvas>
+        </section>
+        <section>
+            <h2>Gestion des Comptes</h2>
+            <p>
+                <a href="users.php" class="btn">Voir/Modifier/Suspendre Utilisateurs</a>
+                <a href="employees.php" class="btn">Voir/Modifier/Suspendre Employés</a>
+            </p>
         </section>
     </main>
     <script>
