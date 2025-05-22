@@ -311,7 +311,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endif; ?>
                                 </li>
                             </ul>
-                            <form method="get" action="detail_corrige.php" class="d-grid">
+                            <form method="get" action="detail.php" class="d-grid">
                                 <input type="hidden" name="id" value="<?= $r['id'] ?>">
                                 <button type="submit" class="btn btn-outline-primary">Détail</button>
                             </form>
