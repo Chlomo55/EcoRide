@@ -1,6 +1,10 @@
 {
     "require": {
         "mongodb/mongodb": "^1.20",
-        "phpmailer/phpmailer": "^6.10"
+        "phpmailer/phpmailer": "^6.10",
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mongodb": "*"
     }
 }
