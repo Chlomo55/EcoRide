@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     if ($name && $email) {
         $db->employees->insertOne(['name' => $name, 'email' => $email]);
-        header('Location: employees.php');
+        header('Location: /Admin/employees.php');
         exit;
     }
 }
@@ -26,6 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Email : <input type="email" name="email" required></label><br>
         <button type="submit">Ajouter</button>
     </form>
-    <a href="employees.php">Retour</a>
+    <a href="/Admin/employees.php">Retour</a>
 </body>
 </html>

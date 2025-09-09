@@ -1,7 +1,9 @@
 <?php
 require 'vendor/autoload.php';
 
-$mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+// Use Heroku MONGODB_URI if available, otherwise fallback to localhost
+$mongo_url = getenv('MONGODB_URI') ?: "mongodb://localhost:27017";
+$mongoClient = new MongoDB\Client($mongo_url);
 $db = $mongoClient->selectDatabase('admin'); // Remplace par le nom de ta base si besoin
 
 // Création d'un compte admin (à faire une seule fois, mot de passe à changer ensuite)

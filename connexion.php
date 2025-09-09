@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['mail'] = $user['mail'];
             $_SESSION['credit'] = $user['credit'];
             $_SESSION['category'] = $user['category'];
-            header('Location: compte.php');
+            header('Location: /compte.php');
             exit;
         } else {
             echo "<p style='color: red;'>Identifiants incorrects.</p>";

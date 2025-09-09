@@ -13,5 +13,5 @@ if (isset($_GET['id'])) {
         die("Erreur lors de la suspension : " . $e->getMessage());
     }
 }
-header('Location: employees.php');
+header('Location: /Admin/employees.php');
 exit;

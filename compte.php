@@ -3,7 +3,7 @@ include_once('header.php'); // Inclut le fichier d'en-tête
 
 // Vérifie si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
-    header('Location: connexion.php'); // Redirige vers la page de connexion
+    header('Location: /connexion.php'); // Redirige vers la page de connexion
     exit;
 }
 ?>
@@ -146,8 +146,12 @@ button[type="submit"]:hover {
         $newCategory = $_POST['category'];
         $userId = $_SESSION['user_id'];
 
-        // Connexion à la base de données
-        $conn = new mysqli('localhost', 'root', '', 'ecoride');
+        // Connexion à la base de données avec support des variables d'environnement Heroku
+        $host = getenv('MYSQL_HOST') ?: 'localhost';
+        $user = getenv('MYSQL_USER') ?: 'root';
+        $password = getenv('MYSQL_PASSWORD') ?: '';
+        $dbname = getenv('MYSQL_DATABASE') ?: 'ecoride';
+        $conn = new mysqli($host, $user, $password, $dbname);
 
         // Vérification de la connexion
         if ($conn->connect_error) {

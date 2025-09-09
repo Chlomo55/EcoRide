@@ -1,14 +1,15 @@
 <?php
 session_start();
 if (!isset($_SESSION['employee_logged_in']) || !$_SESSION['employee_logged_in']) {
-    header('Location: ../connexion.php');
+    header('Location: /connexion.php');
     exit;
 }
 
-$host = 'localhost';
-$dbname = 'ecoride';
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride';
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);

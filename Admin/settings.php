@@ -1,9 +1,10 @@
 <?php
 session_start();
-$host = 'localhost';
-$dbname = 'ecoride'; // Mets ici le nom de ta base
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride'; // Mets ici le nom de ta base
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 // Exemple : on suppose que l'admin a l'id 1
 $admin_id = 1;

@@ -54,8 +54,8 @@ $statistics = getStatistics();
         <section>
             <h2>Gestion des Comptes</h2>
             <p>
-                <a href="users.php" class="btn">Voir/Modifier/Suspendre Utilisateurs</a>
-                <a href="employees.php" class="btn">Voir/Modifier/Suspendre Employés</a>
+                <a href="/Admin/users.php" class="btn">Voir/Modifier/Suspendre Utilisateurs</a>
+                <a href="/Admin/employees.php" class="btn">Voir/Modifier/Suspendre Employés</a>
             </p>
         </section>
     </main>
