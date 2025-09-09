@@ -1,9 +1,9 @@
 <?php
-// Connexion à MySQL
-$host = 'localhost';
-$dbname = 'ecoride'; // Remplace par le nom de ta base
-$user = 'root'; // Ou ton utilisateur MySQL
-$pass = ''; // Mot de passe MySQL
+// Connexion à MySQL avec support des variables d'environnement Heroku
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride'; // Remplace par le nom de ta base
+$user = getenv('MYSQL_USER') ?: 'root'; // Ou ton utilisateur MySQL
+$pass = getenv('MYSQL_PASSWORD') ?: ''; // Mot de passe MySQL
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
@@ -27,9 +27,9 @@ try {
     <header>
         <h1>Gestion des Utilisateurs</h1>
         <nav>
-            <a href="dashboard.php">Tableau de Bord</a>
-            <a href="add_user.php">Ajouter un Utilisateur</a>
-            <a href="settings.php">Paramètres</a>
+            <a href="/Admin/dashboard.php">Tableau de Bord</a>
+            <a href="/Admin/add_user.php">Ajouter un Utilisateur</a>
+            <a href="/Admin/settings.php">Paramètres</a>
         </nav>
     </header>
 
@@ -52,8 +52,8 @@ try {
                         <td><?php echo htmlspecialchars($user['mail'] ?? ''); ?></td>
                         <td><?php echo (int)($user['credit'] ); ?></td>
                         <td>
-                            <a href="edit_user.php?id=<?php echo htmlspecialchars($user['id']); ?>">Modifier</a>
-                            <a href="delete_user.php?id=<?php echo htmlspecialchars($user['id']); ?>">Supprimer</a>
+                            <a href="/Admin/edit_user.php?id=<?php echo htmlspecialchars($user['id']); ?>">Modifier</a>
+                            <a href="/Admin/delete_user.php?id=<?php echo htmlspecialchars($user['id']); ?>">Supprimer</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

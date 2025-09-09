@@ -1,8 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'nom_de_ta_base'; // Remplace par le nom de ta base
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'nom_de_ta_base'; // Remplace par le nom de ta base
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
@@ -12,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $stmt = $pdo->prepare("INSERT INTO user (pseudo, mail) VALUES (?, ?)");
         $stmt->execute([$name, $email]);
-        header('Location: users.php');
+        header('Location: /Admin/users.php');
         exit;
     } catch (PDOException $e) {
         die("Erreur : " . $e->getMessage());
@@ -35,6 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Email : <input type="email" name="email" required></label><br>
         <button type="submit">Ajouter</button>
     </form>
-    <a href="users.php">Retour</a>
+    <a href="/Admin/users.php">Retour</a>
 </body>
 </html>

@@ -1,8 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'ecoride'; // Remplace par le nom de ta base
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride'; // Remplace par le nom de ta base
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
@@ -16,7 +17,7 @@ try {
             $credit = $_POST['credit'];
             $stmt = $pdo->prepare("UPDATE user SET pseudo = ?, mail = ?, credit = ? WHERE id = ?");
             $stmt->execute([$pseudo, $mail, $credit, $id]);
-            header('Location: users.php');
+            header('Location: /Admin/users.php');
             exit;
         } else {
             $stmt = $pdo->prepare("SELECT * FROM user WHERE id = ?");
@@ -48,7 +49,7 @@ try {
         <label>Crédits : <input type="number" name="credit" value="<?php echo (int)($user['credit']); ?>" required></label><br>
         <input type="hidden" name="id" value="<?php echo (int)($user['id']); ?>">
         <button type="submit">Enregistrer</button>
-        <a href="users.php">Annuler</a>
+        <a href="/Admin/users.php">Annuler</a>
     </form>
 </body>
 </html>

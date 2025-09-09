@@ -6,7 +6,13 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$pdo = new PDO("mysql:host=localhost;dbname=ecoride", "root", "");
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride';
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASSWORD') ?: '';
+
+$pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
 
 $id = $_GET['id'];
 
@@ -30,7 +36,7 @@ if (!$covoit) {
 // Traitement de la participation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['participer'])) {
     if (!isset($_SESSION['user_logged_in']) || $_SESSION['category'] !== 'passager') {
-        header("Location: connexion.php");
+        header("Location: /connexion.php");
         exit;
     }
 

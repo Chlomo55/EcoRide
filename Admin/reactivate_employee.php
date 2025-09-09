@@ -22,5 +22,5 @@ if (isset($_GET['id'])) {
         die("Aucune modification effectuée. L'ID est-il correct ?");
     }
 }
-header('Location: employees.php');
+header('Location: /Admin/employees.php');
 exit;

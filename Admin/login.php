@@ -1,9 +1,10 @@
 <?php
 session_start();
-$host = 'localhost';
-$dbname = 'ecoride';
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride';
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 $error = '';
 $info = '';
@@ -62,7 +63,7 @@ try {
         if ($admin && password_verify($password, $admin['password'])) {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_id'] = $admin['id'];
-            header('Location: dashboard.php');
+            header('Location: /Admin/dashboard.php');
             exit;
         } else {
             $error = 'Identifiants incorrects.';

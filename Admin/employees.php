@@ -18,10 +18,10 @@ $employees = $collection->find();
     <header>
         <h1>Gestion des Employés</h1>
         <nav>
-            <a href="dashboard.php">Tableau de Bord</a>
-            <a href="add_employee.php">Ajouter un Employé</a>
-            <a href="users.php">Utilisateurs</a>
-            <a href="settings.php">Paramètres</a>
+            <a href="/Admin/dashboard.php">Tableau de Bord</a>
+            <a href="/Admin/add_employee.php">Ajouter un Employé</a>
+            <a href="/Admin/users.php">Utilisateurs</a>
+            <a href="/Admin/settings.php">Paramètres</a>
         </nav>
     </header>
     <main>
@@ -55,11 +55,11 @@ $employees = $collection->find();
                             <?php if (!empty($employee['deleted'])): ?>
                                 <!-- Aucun bouton -->
                             <?php elseif (!empty($employee['suspended'])): ?>
-                                <a href="reactivate_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Réactiver</a>
-                                <a href="delete_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Supprimer</a>
+                                <a href="/Admin/reactivate_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Réactiver</a>
+                                <a href="/Admin/delete_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Supprimer</a>
                             <?php else: ?>
-                                <a href="suspend_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Suspendre</a>
-                                <a href="delete_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Supprimer</a>
+                                <a href="/Admin/suspend_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Suspendre</a>
+                                <a href="/Admin/delete_employee.php?id=<?php echo htmlspecialchars((string)$employee['_id']); ?>">Supprimer</a>
                             <?php endif; ?>
                         </td>
                     </tr>

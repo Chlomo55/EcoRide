@@ -2,7 +2,7 @@
 require_once 'mongo_connect.php';
 
 if (!isset($_GET['id'])) {
-    header('Location: employees.php');
+    header('Location: /Admin/employees.php');
     exit;
 }
 
@@ -18,7 +18,7 @@ if (!$employee) {
 // Si le formulaire de confirmation est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm']) && $_POST['confirm'] === 'oui') {
     $collection->deleteOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
-    header('Location: employees.php');
+    header('Location: /Admin/employees.php');
     exit;
 }
 ?>
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm']) && $_POST[
     <p>Voulez-vous vraiment supprimer définitivement l'employé : <strong><?php echo htmlspecialchars($employee['name'] ?? ''); ?></strong> ?</p>
     <form method="post">
         <button type="submit" name="confirm" value="oui">Oui, supprimer</button>
-        <a href="employees.php">Annuler</a>
+        <a href="/Admin/employees.php">Annuler</a>
     </form>
 </body>
 </html>

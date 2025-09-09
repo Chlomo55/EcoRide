@@ -1,8 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'ecoride'; // Remplace par le nom de ta base
-$user = 'root';
-$pass = '';
+// Use Heroku environment variables if available, otherwise fallback to localhost
+$host = getenv('MYSQL_HOST') ?: 'localhost';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride'; // Remplace par le nom de ta base
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 
 if (isset($_GET['id'])) {
     try {
@@ -14,5 +15,5 @@ if (isset($_GET['id'])) {
         die("Erreur : " . $e->getMessage());
     }
 }
-header('Location: users.php');
+header('Location: /Admin/users.php');
 exit;
